@@ -2,10 +2,28 @@
 
 A collection of utilities for working with PowerPoint presentations and PDFs.
 
+## Quick Start - GUI Interface
+
+For the easiest experience, use the graphical interface:
+
+**macOS:**
+1. Double-click `launch_gui.command` in Finder
+2. If prompted, allow the file to run (System Preferences → Security & Privacy)
+
+**All Platforms:**
+```bash
+python3 deck_tools_gui.py
+```
+
+The GUI provides an easy-to-use interface for both tools with file/folder selection, progress tracking, and output display.
+
+---
+
 ## Tools
 
 1. [PowerPoint to PDF Converter](#powerpoint-to-pdf-converter) - Convert PowerPoint files to PDF
 2. [PDF Splitter](#pdf-splitter) - Split large PDFs into smaller chunks
+3. [GUI Interface](#gui-interface) - Graphical interface for easy access
 
 ---
 
@@ -218,3 +236,78 @@ Install the library with: `pip install pypdf`
 
 **Permission errors:**
 Ensure you have read permissions for the input file and write permissions for the output directory.
+
+---
+
+## GUI Interface
+
+A user-friendly graphical interface for running both tools without using the command line.
+
+### Requirements
+
+- Python 3.6 or higher with tkinter (usually included)
+- All requirements for the tools you want to use (LibreOffice for PPT conversion, pypdf for PDF splitting)
+
+### Installation
+
+No additional installation required - tkinter is included with Python on most systems.
+
+### Launching the GUI
+
+**macOS (Easiest):**
+1. Open Finder and navigate to the Deck-Tools folder
+2. Double-click `launch_gui.command`
+3. If macOS asks for permission, go to System Preferences → Security & Privacy and allow the file to run
+4. The GUI will open automatically
+
+**All Platforms:**
+```bash
+cd Deck-Tools
+python3 deck_tools_gui.py
+```
+
+### Using the GUI
+
+The GUI has two tabs:
+
+#### PowerPoint to PDF Tab
+1. Click "Browse..." to select the directory containing PowerPoint files
+2. Check "Process subdirectories recursively" if you want to include subfolders
+3. (Optional) Select an output directory, or leave empty to save PDFs next to original files
+4. Click "Convert to PDF"
+5. Watch the progress in the output console at the bottom
+
+#### PDF Splitter Tab
+1. Choose mode: "Single PDF File" or "Directory of PDFs"
+2. Click "Browse..." to select your file or directory
+3. Set "Maximum pages per file" (default: 100 for Notion compatibility)
+4. For directory mode: Check "Process subdirectories recursively" if needed
+5. (Optional) Select an output directory, or leave empty to save split PDFs next to originals
+6. Click "Split PDFs"
+7. Watch the progress in the output console at the bottom
+
+### Features
+
+- **Easy file selection**: Browse buttons for all inputs
+- **Real-time progress**: See output as the scripts run
+- **Tab-based interface**: Switch between tools easily
+- **Smart defaults**: Pre-configured with sensible settings
+- **Error messages**: Clear notifications if something goes wrong
+- **Output console**: View detailed logs of all operations
+- **Non-blocking**: GUI stays responsive while processing
+
+### Screenshots
+
+The GUI includes:
+- Clean, organized layout with tabs
+- File/directory browser dialogs
+- Configurable options for each tool
+- Scrollable output console showing progress
+- Success/error message boxes
+
+### Tips
+
+- The output console shows the exact command being run
+- You can clear the output console between operations
+- All operations run in background threads, so the GUI stays responsive
+- For macOS users: Keep the `launch_gui.command` file in your Dock for quick access
