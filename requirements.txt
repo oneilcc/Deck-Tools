@@ -1,8 +1,11 @@
-# No external Python packages required
-# This script uses only Python standard library
+# Python Packages
+# For split_pdf.py - PDF splitting functionality
+pypdf>=3.0.0
+
+# ppt_to_pdf.py uses only Python standard library
 
 # System requirements:
-# - LibreOffice (for PDF conversion)
+# - LibreOffice (for PowerPoint to PDF conversion)
 #   Install on Debian/Ubuntu: sudo apt-get install libreoffice
 #   Install on macOS: brew install --cask libreoffice
 #   Install on Windows: Download from https://www.libreoffice.org/

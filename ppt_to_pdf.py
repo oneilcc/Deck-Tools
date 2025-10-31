@@ -10,11 +10,74 @@ import os
 import sys
 import subprocess
 import argparse
+import platform
 from pathlib import Path
 
 
 # Supported PowerPoint file extensions
 POWERPOINT_EXTENSIONS = {'.ppt', '.pptx', '.pptm', '.odp'}
+
+
+def find_libreoffice_executable():
+    """
+    Find the LibreOffice executable based on the operating system.
+
+    Returns:
+        str: Path to the LibreOffice executable, or None if not found
+    """
+    system = platform.system()
+
+    # List of possible LibreOffice executable locations
+    possible_paths = []
+
+    if system == 'Darwin':  # macOS
+        possible_paths = [
+            '/opt/homebrew/bin/soffice',  # ARM Mac (M1/M2/M3)
+            '/usr/local/bin/soffice',      # Intel Mac
+            '/Applications/LibreOffice.app/Contents/MacOS/soffice',  # Direct app
+        ]
+    elif system == 'Linux':
+        possible_paths = [
+            'soffice',         # Usually in PATH
+            'libreoffice',     # Alternative command
+            '/usr/bin/soffice',
+            '/usr/bin/libreoffice',
+        ]
+    elif system == 'Windows':
+        possible_paths = [
+            'soffice.exe',     # Usually in PATH
+            'libreoffice.exe',
+            r'C:\Program Files\LibreOffice\program\soffice.exe',
+            r'C:\Program Files (x86)\LibreOffice\program\soffice.exe',
+        ]
+
+    # Try each path
+    for path in possible_paths:
+        try:
+            # For simple command names, try to find them in PATH
+            if os.path.sep not in path and not path.endswith('.exe'):
+                result = subprocess.run(
+                    [path, '--version'],
+                    capture_output=True,
+                    text=True,
+                    timeout=5
+                )
+                if result.returncode == 0:
+                    return path
+            # For absolute paths, check if file exists
+            elif Path(path).exists():
+                result = subprocess.run(
+                    [path, '--version'],
+                    capture_output=True,
+                    text=True,
+                    timeout=5
+                )
+                if result.returncode == 0:
+                    return path
+        except (FileNotFoundError, subprocess.TimeoutExpired, PermissionError):
+            continue
+
+    return None
 
 
 def is_powerpoint_file(file_path):
@@ -24,17 +87,7 @@ def is_powerpoint_file(file_path):
 
 def check_libreoffice_installed():
     """Check if LibreOffice is installed and available."""
-    try:
-        result = subprocess.run(
-            ['/opt/homebrew/bin/soffice', '--version'],
-            capture_output=True,
-            text=True,
-            timeout=5,
-            env={**os.environ, "PATH": "/opt/homebrew/bin:" + os.environ["PATH"]}
-        )
-        return result.returncode == 0
-    except (FileNotFoundError, subprocess.TimeoutExpired):
-        return False
+    return find_libreoffice_executable() is not None
 
 
 def convert_to_pdf(input_file, output_dir=None):
@@ -62,11 +115,17 @@ def convert_to_pdf(input_file, output_dir=None):
 
     print(f"Converting: {input_path.name}")
 
+    # Get the LibreOffice executable
+    libreoffice_exe = find_libreoffice_executable()
+    if not libreoffice_exe:
+        print(f"  ✗ Failed: LibreOffice executable not found")
+        return False
+
     try:
         # Run LibreOffice in headless mode to convert to PDF
         result = subprocess.run(
             [
-                '/opt/homebrew/bin/soffice',
+                libreoffice_exe,
                 '--headless',
                 '--convert-to', 'pdf',
                 '--outdir', str(output_dir),
@@ -74,8 +133,7 @@ def convert_to_pdf(input_file, output_dir=None):
             ],
             capture_output=True,
             text=True,
-            timeout=60,
-            env={**os.environ, "PATH": "/opt/homebrew/bin:" + os.environ["PATH"]}
+            timeout=60
         )
 
         if result.returncode == 0:
@@ -178,8 +236,11 @@ Examples:
 
     # Check if LibreOffice is available
     if not check_libreoffice_installed():
-        print("Error: LibreOffice is not installed or not in PATH")
-        print("Please install LibreOffice: sudo apt-get install libreoffice")
+        print("Error: LibreOffice is not installed or not found")
+        print("\nInstall LibreOffice:")
+        print("  macOS:   brew install --cask libreoffice")
+        print("  Linux:   sudo apt-get install libreoffice")
+        print("  Windows: https://www.libreoffice.org/download/")
         sys.exit(1)
 
     # Process the directory
