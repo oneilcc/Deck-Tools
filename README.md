@@ -268,9 +268,25 @@ python3 deck_tools_gui.py
 
 ### Using the GUI
 
-The GUI has two tabs:
+The GUI has three tabs:
+
+#### Convert & Split Tab (Recommended)
+
+**The complete workflow - perfect for preparing presentations for Notion!**
+
+This tab runs both operations automatically:
+1. Click "Browse..." to select the directory containing your PowerPoint files
+2. Check "Process subdirectories recursively" to include all subfolders (recommended)
+3. Set "Maximum pages per PDF" (default: 100 for Notion compatibility)
+4. Click "▶ Run Complete Workflow"
+5. Watch the progress in the output console:
+   - **Step 1**: All PowerPoint files are converted to PDF
+   - **Step 2**: Any PDFs over the page limit are automatically split
+6. Done! Your files are ready to upload to Notion
 
 #### PowerPoint to PDF Tab
+
+For converting PowerPoint files only:
 1. Click "Browse..." to select the directory containing PowerPoint files
 2. Check "Process subdirectories recursively" if you want to include subfolders
 3. (Optional) Select an output directory, or leave empty to save PDFs next to original files
@@ -278,6 +294,8 @@ The GUI has two tabs:
 5. Watch the progress in the output console at the bottom
 
 #### PDF Splitter Tab
+
+For splitting existing PDFs only:
 1. Choose mode: "Single PDF File" or "Directory of PDFs"
 2. Click "Browse..." to select your file or directory
 3. Set "Maximum pages per file" (default: 100 for Notion compatibility)
@@ -288,13 +306,15 @@ The GUI has two tabs:
 
 ### Features
 
+- **Complete workflow**: Convert & Split tab runs both operations sequentially
 - **Easy file selection**: Browse buttons for all inputs
-- **Real-time progress**: See output as the scripts run
-- **Tab-based interface**: Switch between tools easily
-- **Smart defaults**: Pre-configured with sensible settings
+- **Real-time progress**: See output as the scripts run with step-by-step feedback
+- **Tab-based interface**: Switch between workflow, conversion, and splitting
+- **Smart defaults**: Pre-configured with sensible settings (100 pages for Notion)
 - **Error messages**: Clear notifications if something goes wrong
 - **Output console**: View detailed logs of all operations
 - **Non-blocking**: GUI stays responsive while processing
+- **Sequential execution**: Workflow ensures conversion completes before splitting starts
 
 ### Screenshots
 
@@ -307,7 +327,9 @@ The GUI includes:
 
 ### Tips
 
-- The output console shows the exact command being run
+- **Use the "Convert & Split" tab** for the most common workflow - it's the easiest!
+- The output console shows the exact command being run for each step
 - You can clear the output console between operations
 - All operations run in background threads, so the GUI stays responsive
 - For macOS users: Keep the `launch_gui.command` file in your Dock for quick access
+- The workflow tab is perfect for preparing entire presentation folders for Notion upload
