@@ -1,0 +1,8 @@
+# No external Python packages required
+# This script uses only Python standard library
+
+# System requirements:
+# - LibreOffice (for PDF conversion)
+#   Install on Debian/Ubuntu: sudo apt-get install libreoffice
+#   Install on macOS: brew install --cask libreoffice
+#   Install on Windows: Download from https://www.libreoffice.org/
