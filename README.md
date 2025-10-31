@@ -24,6 +24,7 @@ The GUI provides an easy-to-use interface for both tools with file/folder select
 1. [PowerPoint to PDF Converter](#powerpoint-to-pdf-converter) - Convert PowerPoint files to PDF
 2. [PDF Splitter](#pdf-splitter) - Split large PDFs into smaller chunks
 3. [GUI Interface](#gui-interface) - Graphical interface for easy access
+4. [Conference Knowledge Graph Builder](#conference-knowledge-graph-builder) - Build a graph database from presentations
 
 ---
 
@@ -333,3 +334,127 @@ The GUI includes:
 - All operations run in background threads, so the GUI stays responsive
 - For macOS users: Keep the `launch_gui.command` file in your Dock for quick access
 - The workflow tab is perfect for preparing entire presentation folders for Notion upload
+
+---
+
+## Conference Knowledge Graph Builder
+
+**NEW**: Build a knowledge graph from your PDF presentations using Memgraph for conference preparation and blog post generation.
+
+### What It Does
+
+Extract content from PDF slide decks and build an intelligent graph database that:
+- Identifies topics, keywords, and entities across all presentations
+- Creates relationships between related concepts
+- Helps generate conference agendas based on content analysis
+- Provides material for pre/post-conference blog posts
+- Enables powerful queries to find connections and insights
+
+### Quick Start
+
+1. **Start Memgraph**:
+   ```bash
+   docker run -p 7687:7687 -p 7444:7444 memgraph/memgraph-platform
+   ```
+
+2. **Install dependencies**:
+   ```bash
+   cd graph_builder
+   ./setup.sh
+   ```
+
+3. **Build your knowledge graph**:
+   ```bash
+   python3 graph_builder.py "/Users/colin/Documents/TechCON/2025 - Dallas" --recursive --clear
+   ```
+
+4. **Generate agenda suggestions**:
+   ```bash
+   python3 query_tools.py --action agenda
+   ```
+
+5. **Visualize**: Open http://localhost:7444 to explore your graph
+
+### Use Cases
+
+**For Conference Organizers:**
+- Automatically identify popular topics for keynotes
+- Suggest track organization based on related topics
+- Find which presentations cover similar themes
+
+**For Bloggers/Content Creators:**
+- Get comprehensive material about specific topics
+- Find connections between presentations for insightful content
+- Identify trending themes before the conference
+- Query the graph after the conference for follow-up posts
+
+**For Attendees:**
+- Search presentations by keyword
+- Find related presentations to plan your schedule
+- Explore topic connections
+
+### Example Workflow
+
+```python
+from graph_builder import GraphBuilder
+from query_tools import ConferenceQueryTools
+
+# Build the graph
+builder = GraphBuilder()
+# ... load presentations ...
+
+# Query for insights
+tools = ConferenceQueryTools()
+
+# Generate agenda
+agenda = tools.generate_agenda_suggestions()
+
+# Get blog post material
+material = tools.get_blog_post_material("Cloud Native")
+print(f"Found {len(material['presentations'])} presentations about Cloud Native")
+
+# Find related presentations
+related = tools.find_related_presentations("my_presentation.pdf")
+```
+
+### Graph Schema
+
+The graph contains:
+- **PresentationNode**: PDF documents with metadata
+- **SlideNode**: Individual slides with content
+- **TopicNode**: Extracted themes (e.g., "Kubernetes", "Machine Learning")
+- **KeywordNode**: Important terms and phrases
+- **EntityNode**: People, organizations, products, technologies
+
+Relationships:
+- `CONTAINS`, `COVERS`, `MENTIONS`, `REFERENCES`, `RELATED_TO`
+
+### Documentation
+
+See [graph_builder/README.md](graph_builder/README.md) for complete documentation including:
+- Detailed usage examples
+- API reference
+- Customization guide
+- Advanced queries
+- Troubleshooting
+
+### Requirements
+
+- Python 3.8+
+- Docker (for Memgraph)
+- Python packages: `pdfplumber`, `gqlalchemy`, and others (see graph_builder/requirements.txt)
+
+### Demo
+
+Run the complete workflow example:
+```bash
+cd graph_builder
+python3 example_workflow.py
+```
+
+This will:
+1. Extract all presentations from your TechCON folder
+2. Build the knowledge graph
+3. Generate agenda suggestions
+4. Show topic analysis
+5. Provide blog post material examples
