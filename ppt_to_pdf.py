@@ -26,10 +26,11 @@ def check_libreoffice_installed():
     """Check if LibreOffice is installed and available."""
     try:
         result = subprocess.run(
-            ['libreoffice', '--version'],
+            ['/opt/homebrew/bin/soffice', '--version'],
             capture_output=True,
             text=True,
-            timeout=5
+            timeout=5,
+            env={**os.environ, "PATH": "/opt/homebrew/bin:" + os.environ["PATH"]}
         )
         return result.returncode == 0
     except (FileNotFoundError, subprocess.TimeoutExpired):
@@ -65,7 +66,7 @@ def convert_to_pdf(input_file, output_dir=None):
         # Run LibreOffice in headless mode to convert to PDF
         result = subprocess.run(
             [
-                'libreoffice',
+                '/opt/homebrew/bin/soffice',
                 '--headless',
                 '--convert-to', 'pdf',
                 '--outdir', str(output_dir),
@@ -73,7 +74,8 @@ def convert_to_pdf(input_file, output_dir=None):
             ],
             capture_output=True,
             text=True,
-            timeout=60
+            timeout=60,
+            env={**os.environ, "PATH": "/opt/homebrew/bin:" + os.environ["PATH"]}
         )
 
         if result.returncode == 0:
